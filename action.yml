@@ -1,0 +1,23 @@
+name: "Create Or Update Ephemeral Action"
+description: "Creates or updates an ephemeral"
+author: "Apollorion"
+branding:
+  icon: arrow-up
+  color: black
+inputs:
+  product_name:
+    description: "Name of the product (ex. consumer-app)"
+    required: true
+  gh_token:
+      description: "GH token that can create ephemerals"
+      required: true
+  helm_chart_values:
+    description: "Values of the helm chart"
+    default: ""
+    required: false
+outputs:
+  deployment_id:
+    description: "The ID of the created deployment"
+runs:
+  using: "node16"
+  main: "dist/index.js"

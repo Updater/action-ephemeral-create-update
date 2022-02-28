@@ -8347,7 +8347,7 @@ async function run() {
         if (deployment.status !== 201) {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
-        const branch = context.ref.split("/")[2];
+        const branch = dnsSafe(context.ref.split("/")[2]);
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
             ...context.repo,
@@ -8387,6 +8387,9 @@ async function run() {
         //@ts-ignore
         core.setFailed(error.message);
     }
+}
+function dnsSafe(string) {
+    return string.replace("_", "-").replace(".", "-");
 }
 run();
 

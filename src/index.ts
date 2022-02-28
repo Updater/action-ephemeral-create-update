@@ -59,7 +59,6 @@ async function run() {
         });
 
         if(workflowDispatch.status !== 204){
-            console.log(workflowDispatch);
             throw new Error(`Failed to create workflow dispatch: ${workflowDispatch.status}`);
         }
 

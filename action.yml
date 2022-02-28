@@ -11,6 +11,9 @@ inputs:
   gh_token:
       description: "GH token that can create ephemerals"
       required: true
+  helm_chart_version:
+    description: "Version of the helm chart"
+    required: true
   helm_chart_values:
     description: "Values of the helm chart"
     default: ""

@@ -8338,7 +8338,7 @@ async function run() {
         const deployment = await octokit.rest.repos.createDeployment({
             ...context.repo,
             ref: context.ref,
-            environment: "staging",
+            environment: "review",
             transient_environment: true,
             auto_merge: false,
             required_contexts: [],

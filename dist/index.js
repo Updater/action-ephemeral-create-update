@@ -8388,8 +8388,8 @@ async function run() {
         core.setFailed(error.message);
     }
 }
-function dnsSafe(string) {
-    return string.replace("_", "-").replace(".", "-");
+function dnsSafe(s) {
+    return s.replace("_", "-").replace(".", "-");
 }
 run();
 

@@ -73,8 +73,8 @@ async function run() {
     }
 }
 
-function dnsSafe(string: string): string{
-    return string.replace("_", "-").replace(".", "-");
+function dnsSafe(s: string): string{
+    return s.replace("_", "-").replace(".", "-");
 }
 
 run();

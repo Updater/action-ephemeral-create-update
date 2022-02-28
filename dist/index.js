@@ -8333,16 +8333,19 @@ async function run() {
         const productName = core.getInput("product_name", { required: true });
         const helmChartValues = core.getInput("helm_chart_values", { required: true });
         const octokit = github.getOctokit(token);
+        console.log("Creating deployment...");
         const deployment = await octokit.rest.repos.createDeployment({
             ...context.repo,
             ref: context.ref,
             environment: "staging",
             transient_environment: true,
             auto_merge: false,
+            required_contexts: [],
         });
         if (deployment.status !== 201) {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
+        console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
             ...context.repo,
             deployment_id: deployment.data.id,
@@ -8353,6 +8356,7 @@ async function run() {
         if (deploymentStatus.status !== 201) {
             throw new Error(`Failed to create deployment status: ${deploymentStatus.status}`);
         }
+        console.log("Dispatching workflow...");
         const workflowDispatch = await octokit.rest.actions.createWorkflowDispatch({
             owner: "Updater",
             repo: "kubernetes-clusters",

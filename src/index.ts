@@ -45,7 +45,7 @@ async function run() {
         const workflowDispatch = await octokit.rest.actions.createWorkflowDispatch({
             owner: "Updater",
             repo: "kubernetes-clusters",
-            workflow_id: "ephemeral_request_update",
+            workflow_id: "ephemeral_request_update.yaml",
             ref: "main",
             inputs: {
                 branch: branch,
@@ -59,6 +59,7 @@ async function run() {
         });
 
         if(workflowDispatch.status !== 204){
+            console.log(workflowDispatch);
             throw new Error(`Failed to create workflow dispatch: ${workflowDispatch.status}`);
         }
 

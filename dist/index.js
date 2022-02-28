@@ -8346,13 +8346,14 @@ async function run() {
         if (deployment.status !== 201) {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
+        const branch = context.ref.split("/")[2];
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
             ...context.repo,
             deployment_id: deployment.data.id,
             state: "in_progress",
             log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
-            environment_url: `https://${context.ref}.${productName}.review.infra.updatron.com`,
+            environment_url: `https://${branch}.${productName}.review.infra.updatron.com`,
         });
         if (deploymentStatus.status !== 201) {
             throw new Error(`Failed to create deployment status: ${deploymentStatus.status}`);
@@ -8364,7 +8365,7 @@ async function run() {
             workflow_id: "ephemeral_request_update",
             ref: "main",
             inputs: {
-                branch: context.ref,
+                branch: branch,
                 sha: context.sha,
                 product_name: productName,
                 repository_name: context.repo.repo,

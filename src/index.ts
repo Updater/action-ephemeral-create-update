@@ -13,18 +13,32 @@ async function run() {
 
         const octokit = github.getOctokit(token);
 
-        console.log("Creating deployment...");
-        const deployment = await octokit.rest.repos.createDeployment({
+        const listDeployment = await octokit.rest.repos.listDeployments({
             ...context.repo,
             ref: context.ref,
             environment: "review",
-            transient_environment: true,
-            auto_merge: false,
-            required_contexts: [],
         });
 
-        if(deployment.status !== 201){
-            throw new Error(`Failed to create deployment: ${deployment.status}`);
+        let deploymentId: number;
+        if (listDeployment.data.length !== 0) {
+            console.log(`Found existing deployment: ${listDeployment.data[0].id}`);
+            deploymentId = listDeployment.data[0].id;
+        } else {
+            console.log("Creating deployment...");
+            const deployment = await octokit.rest.repos.createDeployment({
+                ...context.repo,
+                ref: context.ref,
+                environment: "review",
+                transient_environment: true,
+                auto_merge: false,
+                required_contexts: [],
+            });
+
+            if(deployment.status !== 201){
+                throw new Error(`Failed to create deployment: ${deployment.status}`);
+            }
+
+            deploymentId = deployment.data.id;
         }
 
         const branch = dnsSafe(context.ref.split("/")[2]);
@@ -32,7 +46,7 @@ async function run() {
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
             ...context.repo,
-            deployment_id: deployment.data.id,
+            deployment_id: deploymentId,
             state: "in_progress",
             log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
             environment_url: `https://${branch}.${productName}.review.infra.updatron.com`,
@@ -54,7 +68,7 @@ async function run() {
                 product_name: productName,
                 repository_name: context.repo.repo,
                 helm_chart_values: helmChartValues,
-                deployment_id: deployment.data.id.toString(),
+                deployment_id: deploymentId.toString(),
                 helm_chart_version: helmChartVersion,
                 tag,
             }
@@ -64,7 +78,7 @@ async function run() {
             throw new Error(`Failed to create workflow dispatch: ${workflowDispatch.status}`);
         }
 
-        core.setOutput("deployment_id", deployment.data.id.toString());
+        core.setOutput("deployment_id", deploymentId.toString());
     } catch (error) {
         //@ts-ignore
         core.error(error);

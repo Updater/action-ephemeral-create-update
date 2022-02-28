@@ -8389,7 +8389,7 @@ async function run() {
     }
 }
 function dnsSafe(s) {
-    return s.replace("_", "-").replace(".", "-");
+    return s.replace(/_/g, "-").replace(/./g, "-");
 }
 run();
 

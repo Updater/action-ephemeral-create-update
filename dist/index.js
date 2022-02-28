@@ -8335,36 +8335,23 @@ async function run() {
         const helmChartVersion = core.getInput("helm_chart_version", { required: true });
         const tag = core.getInput("tag", { required: true });
         const octokit = github.getOctokit(token);
-        const listDeployment = await octokit.rest.repos.listDeployments({
+        console.log("Creating deployment...");
+        const deployment = await octokit.rest.repos.createDeployment({
             ...context.repo,
             ref: context.ref,
             environment: "review",
+            transient_environment: true,
+            auto_merge: false,
+            required_contexts: [],
         });
-        let deploymentId;
-        if (listDeployment.data.length !== 0) {
-            console.log(`Found existing deployment: ${listDeployment.data[0].id}`);
-            deploymentId = listDeployment.data[0].id;
-        }
-        else {
-            console.log("Creating deployment...");
-            const deployment = await octokit.rest.repos.createDeployment({
-                ...context.repo,
-                ref: context.ref,
-                environment: "review",
-                transient_environment: true,
-                auto_merge: false,
-                required_contexts: [],
-            });
-            if (deployment.status !== 201) {
-                throw new Error(`Failed to create deployment: ${deployment.status}`);
-            }
-            deploymentId = deployment.data.id;
+        if (deployment.status !== 201) {
+            throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
         const branch = dnsSafe(context.ref.split("/")[2]);
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
             ...context.repo,
-            deployment_id: deploymentId,
+            deployment_id: deployment.data.id,
             state: "in_progress",
             log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
             environment_url: `https://${branch}.${productName}.review.infra.updatron.com`,
@@ -8384,7 +8371,7 @@ async function run() {
                 product_name: productName,
                 repository_name: context.repo.repo,
                 helm_chart_values: helmChartValues,
-                deployment_id: deploymentId.toString(),
+                deployment_id: deployment.data.id.toString(),
                 helm_chart_version: helmChartVersion,
                 tag,
             }
@@ -8392,7 +8379,7 @@ async function run() {
         if (workflowDispatch.status !== 204) {
             throw new Error(`Failed to create workflow dispatch: ${workflowDispatch.status}`);
         }
-        core.setOutput("deployment_id", deploymentId.toString());
+        core.setOutput("deployment_id", deployment.data.id.toString());
     }
     catch (error) {
         //@ts-ignore

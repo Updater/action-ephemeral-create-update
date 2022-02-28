@@ -10,6 +10,7 @@ GitHub Action to create and update ephemerals
       product_name: review-playground
       helm_chart_values: "$(cat values.yaml)" # Must be a string
       helm_chart_version: "0.1.0"
+      tag: "432faddf4"
 ```
 
 ### Build

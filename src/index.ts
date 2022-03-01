@@ -6,7 +6,7 @@ async function run() {
         const context = github.context;
 
         const token = core.getInput("gh_token", { required: true });
-        const productName = core.getInput("product_name", { required: true });
+        const productName = dnsSafe(core.getInput("product_name", { required: true }));
         const helmChartValues = core.getInput("helm_chart_values", { required: true });
         const helmChartVersion = core.getInput("helm_chart_version", { required: true });
         const tag = core.getInput("tag", { required: true });
@@ -27,7 +27,7 @@ async function run() {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
 
-        const branch = dnsSafe(context.ref.split("/")[2]);
+        const branch = dnsSafe(context.ref.replace("refs/heads/", ""));
 
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
@@ -74,7 +74,7 @@ async function run() {
 }
 
 function dnsSafe(s: string): string{
-    return s.replace(/_/g, "-").replace(/\./g, "-");
+    return s.replace(/_/g, "-").replace(/\./g, "-").replace(/\//g, "-");
 }
 
 run();

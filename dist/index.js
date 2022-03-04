@@ -8333,7 +8333,7 @@ async function run() {
         const productName = dnsSafe(core.getInput("product_name", { required: true }));
         const helmChartValues = core.getInput("helm_chart_values", { required: true });
         const helmChartVersion = core.getInput("helm_chart_version", { required: true });
-        const tag = core.getInput("tag", { required: true });
+        const version = core.getInput("version", { required: true });
         const octokit = github.getOctokit(token);
         console.log("Creating deployment...");
         const deployment = await octokit.rest.repos.createDeployment({
@@ -8367,13 +8367,12 @@ async function run() {
             ref: "main",
             inputs: {
                 branch: branch,
-                sha: context.sha,
                 product_name: productName,
                 repository_name: context.repo.repo,
                 helm_chart_values: helmChartValues,
                 deployment_id: deployment.data.id.toString(),
                 helm_chart_version: helmChartVersion,
-                tag,
+                version,
             }
         });
         if (workflowDispatch.status !== 204) {

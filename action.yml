@@ -14,7 +14,7 @@ inputs:
   helm_chart_version:
     description: "Version of the helm chart"
     required: true
-  tag:
+  version:
     description: "docker tag to deploy"
     required: true
   helm_chart_values:

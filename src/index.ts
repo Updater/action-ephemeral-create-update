@@ -29,7 +29,8 @@ async function run() {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
 
-        const branch = dnsSafe(context.ref.replace("refs/heads/", ""), 51 - productName.length);
+        // KUBERNETES_SAFE_LENGTH - 1 accounts for the `-` we add later in the process
+        const branch = dnsSafe(context.ref.replace("refs/heads/", ""), (KUBERNETES_SAFE_LENGTH - 1) - productName.length);
 
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({

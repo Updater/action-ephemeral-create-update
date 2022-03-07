@@ -8331,7 +8331,7 @@ async function run() {
         const context = github.context;
         const token = core.getInput("gh_token", { required: true });
         const productName = dnsSafe(core.getInput("product_name", { required: true }));
-        const helmChartValues = core.getInput("helm_chart_values", { required: true });
+        const helmChartValues = core.getInput("helm_chart_values", { required: false });
         const helmChartVersion = core.getInput("helm_chart_version", { required: true });
         const version = core.getInput("version", { required: true });
         const octokit = github.getOctokit(token);

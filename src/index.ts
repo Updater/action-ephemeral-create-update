@@ -1,6 +1,8 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
+const KUBERNETES_SAFE_LENGTH = 52
+
 async function run() {
     try {
         const context = github.context;
@@ -72,7 +74,7 @@ async function run() {
     }
 }
 
-function dnsSafe(s: string, maxLength: number = 52): string{
+function dnsSafe(s: string, maxLength: number = KUBERNETES_SAFE_LENGTH): string{
     let regexPattern = new RegExp(`(.{0,${maxLength}}).*`);
     return s.replace(/[_\.\/']/g, '-').replace(regexPattern, '$1').replace(/-$/, '');
 }

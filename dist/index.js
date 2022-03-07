@@ -8326,6 +8326,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const KUBERNETES_SAFE_LENGTH = 52;
 async function run() {
     try {
         const context = github.context;
@@ -8387,7 +8388,7 @@ async function run() {
         core.setFailed(error.message);
     }
 }
-function dnsSafe(s, maxLength = 52) {
+function dnsSafe(s, maxLength = KUBERNETES_SAFE_LENGTH) {
     let regexPattern = new RegExp(`(.{0,${maxLength}}).*`);
     return s.replace(/[_\.\/']/g, '-').replace(regexPattern, '$1').replace(/-$/, '');
 }

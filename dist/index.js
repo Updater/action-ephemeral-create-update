@@ -8391,7 +8391,10 @@ async function run() {
 }
 function dnsSafe(s, maxLength = KUBERNETES_SAFE_LENGTH) {
     let regexPattern = new RegExp(`(.{0,${maxLength}}).*`);
-    return s.replace(/[_\.\/']/g, '-').replace(regexPattern, '$1').replace(/-$/, '');
+    return s.replace(/[_\.\/']/g, '-')
+        .replace(regexPattern, '$1')
+        .replace(/-$/, '')
+        .toLowerCase();
 }
 run();
 

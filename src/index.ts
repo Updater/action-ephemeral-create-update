@@ -27,7 +27,7 @@ async function run() {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
 
-        const branch = dnsSafe(context.ref.replace("refs/heads/", ""));
+        const branch = dnsSafe(context.ref.replace("refs/heads/", ""), 51 - productName.length);
 
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
@@ -72,12 +72,9 @@ async function run() {
     }
 }
 
-function dnsSafe(s: string): string{
-    return s.replace(/_/g, "-")
-        .replace(/\./g, "-")
-        .replace(/\//g, "-")
-        .replace(/'/g, "-")
-        .toLowerCase();
+function dnsSafe(s: string, maxLength: number = 52): string{
+    let regexPattern = new RegExp(`(.{0,${maxLength}}).*`);
+    return s.replace(/[_\.\/']/g, '-').replace(regexPattern, '$1').replace(/-$/, '');
 }
 
 run();

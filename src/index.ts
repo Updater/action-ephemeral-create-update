@@ -73,7 +73,11 @@ async function run() {
 }
 
 function dnsSafe(s: string): string{
-    return s.replace(/_/g, "-").replace(/\./g, "-").replace(/\//g, "-");
+    return s.replace(/_/g, "-")
+        .replace(/\./g, "-")
+        .replace(/\//g, "-")
+        .replace(/'/g, "-")
+        .toLowerCase();
 }
 
 run();

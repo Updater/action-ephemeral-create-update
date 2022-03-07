@@ -8388,7 +8388,11 @@ async function run() {
     }
 }
 function dnsSafe(s) {
-    return s.replace(/_/g, "-").replace(/\./g, "-").replace(/\//g, "-");
+    return s.replace(/_/g, "-")
+        .replace(/\./g, "-")
+        .replace(/\//g, "-")
+        .replace(/'/g, "-")
+        .toLowerCase();
 }
 run();
 

@@ -8363,8 +8363,7 @@ async function run() {
             ...context.repo,
             deployment_id: deployment.data.id,
             state: "in_progress",
-            log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
-            environment_url: `https://${branch}.${productName}.review.infra.updatron.com`,
+            log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`
         });
         if (deploymentStatus.status !== 201) {
             throw new Error(`Failed to create deployment status: ${deploymentStatus.status}`);
@@ -8377,7 +8376,7 @@ async function run() {
             ref: "main",
             inputs: {
                 branch: branch,
-                release_name: generateSubdomainFromBranchName(branch),
+                release_name: generateReleaseNameFromBranchName(branch),
                 product_name: productName,
                 repository_name: context.repo.repo,
                 sha: context.sha,
@@ -8399,7 +8398,7 @@ async function run() {
         core.setFailed(error.message);
     }
 }
-function generateSubdomainFromBranchName(branch) {
+function generateReleaseNameFromBranchName(branch) {
     return (0, unique_names_generator_1.uniqueNamesGenerator)({
         dictionaries: [unique_names_generator_1.adjectives, unique_names_generator_1.adjectives, unique_names_generator_1.animals],
         length: 3,

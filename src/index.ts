@@ -1,14 +1,13 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-
-const KUBERNETES_SAFE_LENGTH = 52
+import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator";
 
 async function run() {
     try {
         const context = github.context;
 
         const token = core.getInput("gh_token", { required: true });
-        const productName = dnsSafe(core.getInput("product_name", { required: true }));
+        const productName = core.getInput("product_name", { required: true });
         const helmChartValues = core.getInput("helm_chart_values", { required: false });
         const helmChartVersion = core.getInput("helm_chart_version", { required: true });
         const version = core.getInput("version", { required: true });
@@ -29,8 +28,7 @@ async function run() {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
 
-        // KUBERNETES_SAFE_LENGTH - 1 accounts for the `-` we add later in the process
-        const branch = dnsSafe(context.ref.replace("refs/heads/", ""), (KUBERNETES_SAFE_LENGTH - 1) - productName.length);
+        const branch = context.ref.replace("refs/heads/", "");
 
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
@@ -53,8 +51,10 @@ async function run() {
             ref: "main",
             inputs: {
                 branch: branch,
+                release_name: generateSubdomainFromBranchName(branch),
                 product_name: productName,
                 repository_name: context.repo.repo,
+                sha: context.sha,
                 helm_chart_values: helmChartValues,
                 deployment_id: deployment.data.id.toString(),
                 helm_chart_version: helmChartVersion,
@@ -75,12 +75,14 @@ async function run() {
     }
 }
 
-function dnsSafe(s: string, maxLength: number = KUBERNETES_SAFE_LENGTH): string{
-    let regexPattern = new RegExp(`(.{0,${maxLength}}).*`);
-    return s.replace(/[_\.\/']/g, '-')
-        .replace(regexPattern, '$1')
-        .replace(/-$/, '')
-        .toLowerCase();
+function generateSubdomainFromBranchName(branch) {
+    return uniqueNamesGenerator({
+        dictionaries: [adjectives, adjectives, animals],
+        length: 3,
+        separator: '-',
+        style: 'lowerCase',
+        seed: branch,
+    });
 }
 
 run();

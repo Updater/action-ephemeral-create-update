@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { uniqueNamesGenerator, adjectives, colors, animals } from "unique-names-generator";
+import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator";
 
 async function run() {
     try {
@@ -35,8 +35,7 @@ async function run() {
             ...context.repo,
             deployment_id: deployment.data.id,
             state: "in_progress",
-            log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`,
-            environment_url: `https://${branch}.${productName}.review.infra.updatron.com`,
+            log_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}/checks`
         });
 
         if(deploymentStatus.status !== 201){
@@ -51,7 +50,7 @@ async function run() {
             ref: "main",
             inputs: {
                 branch: branch,
-                release_name: generateSubdomainFromBranchName(branch),
+                release_name: generateReleaseNameFromBranchName(branch),
                 product_name: productName,
                 repository_name: context.repo.repo,
                 sha: context.sha,
@@ -75,7 +74,7 @@ async function run() {
     }
 }
 
-function generateSubdomainFromBranchName(branch) {
+function generateReleaseNameFromBranchName(branch) {
     return uniqueNamesGenerator({
         dictionaries: [adjectives, adjectives, animals],
         length: 3,

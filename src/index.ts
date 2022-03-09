@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { uniqueNamesGenerator, adjectives, animals } from "unique-names-generator";
 
 async function run() {
     try {
@@ -50,7 +49,6 @@ async function run() {
             ref: "main",
             inputs: {
                 branch: branch,
-                release_name: generateReleaseNameFromBranchName(branch),
                 product_name: productName,
                 repository_name: context.repo.repo,
                 sha: context.sha,
@@ -72,16 +70,6 @@ async function run() {
         //@ts-ignore
         core.setFailed(error.message);
     }
-}
-
-function generateReleaseNameFromBranchName(branch) {
-    return uniqueNamesGenerator({
-        dictionaries: [adjectives, adjectives, animals],
-        length: 3,
-        separator: '-',
-        style: 'lowerCase',
-        seed: branch,
-    });
 }
 
 run();

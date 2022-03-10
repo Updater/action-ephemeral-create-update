@@ -8326,6 +8326,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const MAX_KUBERNETES_LENGTH = 53;
 async function run() {
     try {
         const context = github.context;
@@ -8335,6 +8336,10 @@ async function run() {
         const helmChartVersion = core.getInput("helm_chart_version", { required: true });
         const version = core.getInput("version", { required: true });
         const octokit = github.getOctokit(token);
+        const branch = context.ref.replace("refs/heads/", "");
+        if (branch.length > MAX_KUBERNETES_LENGTH) {
+            throw new Error("Branch name is too long, max length is 53 characters");
+        }
         console.log("Creating deployment...");
         const deployment = await octokit.rest.repos.createDeployment({
             ...context.repo,
@@ -8347,7 +8352,6 @@ async function run() {
         if (deployment.status !== 201) {
             throw new Error(`Failed to create deployment: ${deployment.status}`);
         }
-        const branch = context.ref.replace("refs/heads/", "");
         console.log("Creating deployment status...");
         const deploymentStatus = await octokit.rest.repos.createDeploymentStatus({
             ...context.repo,

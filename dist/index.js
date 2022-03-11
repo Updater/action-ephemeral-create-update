@@ -8338,7 +8338,9 @@ async function run() {
         const octokit = github.getOctokit(token);
         const branch = context.ref.replace("refs/heads/", "");
         if (branch.length > MAX_KUBERNETES_LENGTH) {
-            throw new Error("Branch name is too long, max length is 53 characters");
+            console.log("Branch name is too long, max length is 53 characters");
+            console.log("Not creating review environment...");
+            return;
         }
         console.log("Creating deployment...");
         const deployment = await octokit.rest.repos.createDeployment({

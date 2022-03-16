@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-const MAX_KUBERNETES_LENGTH = 53;
+const MAX_KUBERNETES_LENGTH = 53 - "-canary".length;
 
 async function run() {
     try {
@@ -18,7 +18,7 @@ async function run() {
         const branch = context.ref.replace("refs/heads/", "");
 
         if(branch.length > MAX_KUBERNETES_LENGTH) {
-            console.log("Branch name is too long, max length is 53 characters");
+            console.log(`Branch name is too long, max length is ${MAX_KUBERNETES_LENGTH} characters`);
             console.log("Not creating review environment...");
             return;
         }

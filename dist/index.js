@@ -8326,7 +8326,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const MAX_KUBERNETES_LENGTH = 53;
+const MAX_KUBERNETES_LENGTH = 53 - "-canary".length;
 async function run() {
     try {
         const context = github.context;
@@ -8338,7 +8338,7 @@ async function run() {
         const octokit = github.getOctokit(token);
         const branch = context.ref.replace("refs/heads/", "");
         if (branch.length > MAX_KUBERNETES_LENGTH) {
-            console.log("Branch name is too long, max length is 53 characters");
+            console.log(`Branch name is too long, max length is ${MAX_KUBERNETES_LENGTH} characters`);
             console.log("Not creating review environment...");
             return;
         }

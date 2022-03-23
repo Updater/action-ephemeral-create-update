@@ -49,22 +49,24 @@ async function run() {
             throw new Error(`Failed to create deployment status: ${deploymentStatus.status}`);
         }
 
-        console.log("Dispatching workflow...");
+        const inputs =  {
+            branch: branch,
+            product_name: productName,
+            repository_name: context.repo.repo,
+            sha: context.sha,
+            helm_chart_values: helmChartValues,
+            deployment_id: deployment.data.id.toString(),
+            helm_chart_version: helmChartVersion,
+            version,
+        }
+
+        console.log("Dispatching workflow...", inputs);
         const workflowDispatch = await octokit.rest.actions.createWorkflowDispatch({
             owner: "Updater",
             repo: "kubernetes-clusters",
             workflow_id: "ephemeral_request_update.yaml",
             ref: "main",
-            inputs: {
-                branch: branch,
-                product_name: productName,
-                repository_name: context.repo.repo,
-                sha: context.sha,
-                helm_chart_values: helmChartValues,
-                deployment_id: deployment.data.id.toString(),
-                helm_chart_version: helmChartVersion,
-                version,
-            }
+            inputs
         });
 
         if(workflowDispatch.status !== 204){

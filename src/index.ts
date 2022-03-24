@@ -3,11 +3,18 @@ import * as github from "@actions/github";
 
 const MAX_KUBERNETES_LENGTH = 53;
 
+function getTargetRef(requestedRef: string): string {
+  if (requestedRef === '') {
+    return 'main'
+  }
+  return `ephemeral-${requestedRef}`
+}
+
 async function run() {
     try {
         const context = github.context;
 
-        const actionVersion = core.getInput("action_version", { required: false })
+        const actionVersion = getTargetRef(core.getInput("action_version", { required: false }));
         const token = core.getInput("gh_token", { required: true });
         const productName = core.getInput("product_name", { required: true });
         const helmChartValues = core.getInput("helm_chart_values", { required: false });
@@ -66,7 +73,7 @@ async function run() {
             owner: "Updater",
             repo: "kubernetes-clusters",
             workflow_id: "ephemeral_request_update.yaml",
-            ref: actionVersion || 'main',
+            ref: actionVersion,
             inputs
         });
 

@@ -4,7 +4,7 @@ import * as github from "@actions/github";
 const MAX_KUBERNETES_LENGTH = 53;
 
 function getTargetRef(requestedRef: string): string {
-  if (requestedRef === '') {
+  if (requestedRef === '' || requestedRef === 'main') {
     return 'main'
   }
   return `ephemeral-${requestedRef}`

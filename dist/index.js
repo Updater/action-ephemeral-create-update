@@ -8328,7 +8328,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const MAX_KUBERNETES_LENGTH = 53;
 function getTargetRef(requestedRef) {
-    if (requestedRef === '') {
+    if (requestedRef === '' || requestedRef === 'main') {
         return 'main';
     }
     return `ephemeral-${requestedRef}`;

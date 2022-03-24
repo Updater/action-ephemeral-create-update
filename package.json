@@ -1,6 +1,6 @@
 {
   "name": "action-ephemeral-create-update",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist/index.js",
   "repository": "git@github.com:Updater/action-ephemeral-create-update.git",
   "author": "apollorion <joey@apollorion.com>",
@@ -10,6 +10,7 @@
     "@actions/github": "^5.0.0"
   },
   "scripts": {
+    "prebuild": "node -p \"'export const ACTION_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "ncc build ./src/index.ts -o dist"
   },
   "devDependencies": {

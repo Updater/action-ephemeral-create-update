@@ -11,11 +11,7 @@
     "git-branch-is": "^4.0.0"
   },
   "scripts": {
-    "build": "ncc build ./src/index.ts -o dist",
-    "prepatch": "yarn build && yarn version --prepatch",
-    "preminor": "yarn build && yarn version --preminor",
-    "premajor": "yarn build && yarn version --premajor",
-    "prerelease": "yarn build && yarn version --prerelease"
+    "build": "ncc build ./src/index.ts -o dist"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.33.3",

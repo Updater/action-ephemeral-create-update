@@ -8327,6 +8327,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const MAX_KUBERNETES_LENGTH = 53;
+const ref = process.env.GITHUB_ACTION_REF;
 function getTargetRef(requestedRef) {
     if (requestedRef === '' || requestedRef === 'main') {
         return 'main';

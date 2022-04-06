@@ -3,12 +3,8 @@ description: "Creates or updates an ephemeral"
 author: "Apollorion"
 branding:
   icon: arrow-up
-  color: black
+  color: gray-dark
 inputs:
-  action_version: 
-    description: "The version tag of the action-ephemeral-create-update action"
-    default: "main"
-    required: false
   product_name:
     description: "Name of the product (ex. consumer-app)"
     required: true

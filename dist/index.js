@@ -8346,7 +8346,7 @@ async function run() {
         const deployment = await octokit.rest.repos.createDeployment({
             ...context.repo,
             ref: context.ref,
-            environment: productName || "unknown",
+            environment: `review-${productName || "unknown"}`,
             transient_environment: true,
             auto_merge: false,
             required_contexts: [],

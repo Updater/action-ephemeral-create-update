@@ -1,7 +1,8 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-
 const MAX_KUBERNETES_LENGTH = 53;
+
+const ACTION_REF = process.env.GITHUB_ACTION_REF || "main";
 
 async function run() {
     try {
@@ -65,7 +66,7 @@ async function run() {
             owner: "Updater",
             repo: "kubernetes-clusters",
             workflow_id: "ephemeral_request_update.yaml",
-            ref: "main",
+            ref: ACTION_REF,
             inputs
         });
 

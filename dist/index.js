@@ -8327,9 +8327,17 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const MAX_KUBERNETES_LENGTH = 53;
+const ref = process.env.GITHUB_ACTION_REF;
+function getTargetRef(requestedRef) {
+    if (requestedRef === '' || requestedRef === 'main') {
+        return 'main';
+    }
+    return `ephemeral-${requestedRef}`;
+}
 async function run() {
     try {
         const context = github.context;
+        const actionVersion = getTargetRef(core.getInput("action_version", { required: false }));
         const token = core.getInput("gh_token", { required: true });
         const productName = core.getInput("product_name", { required: true });
         const helmChartValues = core.getInput("helm_chart_values", { required: false });
@@ -8379,7 +8387,7 @@ async function run() {
             owner: "Updater",
             repo: "kubernetes-clusters",
             workflow_id: "ephemeral_request_update.yaml",
-            ref: "main",
+            ref: actionVersion,
             inputs
         });
         if (workflowDispatch.status !== 204) {

@@ -3,7 +3,7 @@ description: "Creates or updates an ephemeral"
 author: "Apollorion"
 branding:
   icon: arrow-up
-  color: black
+  color: gray-dark
 inputs:
   product_name:
     description: "Name of the product (ex. consumer-app)"
